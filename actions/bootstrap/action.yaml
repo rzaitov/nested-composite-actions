@@ -1,0 +1,44 @@
+name: bootstrap build runner
+description: Installs all required assets (dependencies) on the build runner
+# These are boilerplate steps which we want to hide from the main workflow file
+runs:
+  using: composite
+  steps:
+    - name: restore asset A
+      uses: ./actions/restore
+      with:
+        name: asset_a
+        version: ${{ env.DEP_ASSET_A_VERSION }}
+    - name: restore asset B
+      uses: ./actions/restore
+      with:
+        name: asset_b
+        version: ${{ env.DEP_ASSET_B_VERSION }}
+    - name: restore asset C
+      uses: ./actions/restore
+      with:
+        name: asset_c
+        version: ${{ env.DEP_ASSET_C_VERSION }}
+    - name: fetch assets (download/build/whatever)
+      shell: bash
+      run: |
+        # Simulate asset re-creation/generation/build/download/etc process
+        # For the purpuse of the demo we are going to create a 1Mb file for each asset
+        cache_dir_a=${{ env.DEP_CACHE_ROOT }}/asset_a
+        if ! [[ -d $cache_dir_a ]]; then
+          mkdir -p $cache_dir_a
+          dd bs=1M count=1 if=/dev/random of=$cache_dir_a/asset_file_a
+        fi
+
+        cache_dir_b=${{ env.DEP_CACHE_ROOT }}/asset_b
+        if ! [[ -d $cache_dir_b ]]; then
+          mkdir -p $cache_dir_b
+          dd bs=1M count=1 if=/dev/random of=$cache_dir_b/asset_file_b
+        fi
+
+        cache_dir_c=${{ env.DEP_CACHE_ROOT }}/asset_c
+        if ! [[ -d $cache_dir_c ]]; then
+          mkdir -p $cache_dir_c
+          dd bs=1M count=1 if=/dev/random of=$cache_dir_c/asset_file_c
+        fi
+

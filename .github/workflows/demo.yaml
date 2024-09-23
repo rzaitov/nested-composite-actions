@@ -1,0 +1,25 @@
+name: Reproduce issue n. 2030
+on:
+  workflow_dispatch:
+env:
+  DEP_CACHE_ROOT: /tmp/ga-cache
+  DEP_ASSET_A_VERSION: v0.1.2
+  DEP_ASSET_B_VERSION: v1.2.3
+  DEP_ASSET_C_VERSION: v2.3.4
+jobs:
+  show_the_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: bootstrap runner
+        # main idea of the bootstrap composite action is to encapsulate boilerplate code
+        uses: ./actions/bootstrap
+      - name: demo
+        run: |
+          # here should go meaningful steps to build the app
+          # this step is expected to use restored assets some how
+          sha256sum ${{ env.DEP_CACHE_ROOT }}/asset_a/asset_file_a
+          sha256sum ${{ env.DEP_CACHE_ROOT }}/asset_b/asset_file_b
+          sha256sum ${{ env.DEP_CACHE_ROOT }}/asset_c/asset_file_c
+

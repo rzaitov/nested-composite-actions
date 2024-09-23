@@ -1,0 +1,19 @@
+name: restore asset
+description: restores asset from a cache
+# This is a reusable composite actions which encapsulates setting cache path and key logic
+inputs:
+  name:
+    description: the name of the asset to restore 
+    required: true
+  version:
+    description: the version of the asset to restore
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: restore ${{ inputs.name }}
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.DEP_CACHE_ROOT }}/${{ inputs.name }}
+        key: ${{ runner.os }}-${{ runner.arch }}_${{ inputs.name }}_${{ inputs.version }}
+        #    ^ This is kind of low level logic I want to incapsulate inside this composite action
